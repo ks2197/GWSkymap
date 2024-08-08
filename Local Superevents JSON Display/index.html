@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type=text] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type=text]:focus {
+            outline: none;
+            border-color: dodgerblue;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Information</h1>
+    <input type="text" id="searchInput" onkeyup="searchEvent()" placeholder="Search for events...">
+    <table id="eventTable" border="1">
+        <thead>
+            <tr>
+                <th>Event ID</th>
+                <th>Event Start Time (GPS->UTC)</th>
+                <th>Time Created (UTC)</th>
+                <th>Flat Resolution Sky Maps</th>
+                <th>Multi-resolution Sky Maps</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in events_info %}
+            <tr>
+                <td>{{ event.event_id }}</td>
+                <td>{{ event.event_start_time }}</td>
+                <td>{{ event.time_created }}</td>
+                <td>
+                    <ul>
+                        {% for flat_map in event.flat_resolution_sky_maps %}
+                        <li><a href="{{ flat_map }}">{{ flat_map }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        {% for multi_map in event.multi_resolution_sky_maps %}
+                        <li><a href="{{ multi_map }}">{{ multi_map }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function searchEvent() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("searchInput");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("eventTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[0];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>
